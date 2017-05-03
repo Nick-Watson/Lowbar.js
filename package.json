@@ -1,0 +1,28 @@
+{
+  "name": "lowbar.js",
+  "version": "1.0.0",
+  "description": "A reimplantation of the underscore.js library using Node.js and Test Driven Development",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./spec/",
+    "lint": "eslint ./",
+    "posttest": "npm run lint",
+    "precommit": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nick-Watson/Lowbar.js.git"
+  },
+  "author": "Nick Watson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nick-Watson/Lowbar.js/issues"
+  },
+  "homepage": "https://github.com/Nick-Watson/Lowbar.js#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.19.0",
+    "husky": "^0.13.3",
+    "sinon": "^2.2.0"
+  }
+}
