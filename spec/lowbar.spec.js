@@ -199,10 +199,39 @@ describe('_.filter', () => {
 });
 
 describe('_.reject', () => {
+    
     it('is a function', () => {
         const actual = _.reject ;
         const expected = 'function' ;
         expect(actual).to.be.a(expected);
+    });
+
+    it('passes each element in the array, string or object to the predicate and returns a new array of all the values which evaluate to false', () => {
+        const actual = _.reject([1,2,3,4], function (x) {return x % 2 === 0;}) ;
+        const expected = [1,3] ;
+        expect(actual).to.eql(expected);
+        expect(_.reject([1,2,3,4], function (x) {return x > 10;})).to.eql([1,2,3,4]);
+    });
+    
+    it('returns an empty array if there is no predicate passed as a second argument', () => {
+        const actual = _.reject(1234) ;
+        const expected = [] ;
+        expect(actual).to.eql(expected);
+        expect(_.reject(function (x) {return x + 1;})).to.eql([undefined]);
+    });
+    
+    it('returns the first argument as an array if the predicate is not a function', () => {
+        const actual = _.reject([1,2,3,4], 1234);
+        const expected = [1,2,3,4];
+        expect(actual).to.eql(expected);
+        expect(_.reject('hel', 2344)).to.eql(['h','e','l']);
+        expect(_.reject({'foo': 1, 'bar': 2}, [])).to.eql([1,2]);
+    });
+
+    it('returns an empty array if the first argument is not an array, object or string', () => {
+        const actual = _.reject(123, function (x) {return x < 0;}) ;
+        const expected = [] ;
+        expect(actual).to.eql(expected);
     });
 });
 
@@ -213,7 +242,39 @@ describe('_.uniq', () => {
         const expected = 'function' ;
         expect(actual).to.be.a(expected);
     });
+
+    it('returns an empty array if the first argument is not an array/string', () => {
+        const actual = _.uniq(1234) ;
+        const expected = [] ;
+        expect(actual).to.eql(expected);
+        expect(_.uniq(function (x) {return x;})).to.eql(expected);
+        expect(_.uniq({foo: 1, bar: 2})).to.eql(expected);
+    });
+
+    it('returns a new array of unique values from the given array/string', () => {
+        const actual = _.uniq([1,2,3,4,4]) ;
+        const expected = [1,2,3,4] ;
+        const a = [1,2];
+        const arr1 = a;
+        const arr2 = a;
+        expect(actual).to.eql(expected);
+        expect(_.uniq([1,'foo','foo',3,3,4,4,6,7])).to.eql([1,'foo',3,4,6,7]);
+        expect(_.uniq('hello')).to.eql(['h','e','l','o']);
+        expect(_.uniq([arr1,arr2])).to.eql([[1,2]]);
+    });
+    
+    it('returns a new array of unique values using a quicker alogrithm if a isSorted second argument is passed', () => {
+        const actual = _.uniq([1,2,3,4,4], true) ;
+        const expected = [1,2,3,4] ;
+        const a = [1,2];
+        const arr1 = a;
+        const arr2 = a;
+        expect(actual).to.eql(expected);
+        expect(_.uniq([1,'foo','foo',5,4,4,5,6,7],true)).to.not.eql([1,'foo',4,5,6,7]);
+        expect(_.uniq([arr1,arr2]), true).to.eql([[1,2]]);
+    }); 
 });
+
 
 describe('_.map', () => {
     
@@ -222,7 +283,41 @@ describe('_.map', () => {
         const expected = 'function' ;
         expect(actual).to.be.a(expected);
     });
+
+    it('returns an array of the first argument if no iteratee is passed', () => {
+        const actual = _.map('he') ;
+        const expected = ['h','e'] ;
+        expect(actual).to.eql(expected);
+        expect(_.map([1,2,3,4])).to.eql([1,2,3,4]);
+        expect(_.map({foo: 1, bar: 2})).to.eql([1,2]);
+    });
+    
+    it('returns an empty array if a number is passed as the first argument', () => {
+        const actual = _.map(123);
+        const expected = [] ;
+        expect(actual).to.eql(expected);
+    });
+    
+    it('passes each value of the array, the index and the array to an iteratee and then returns a new array of mapped values. Converts strings and objects to arrays before passing to the itereatee', () => {
+        const spy = sinon.spy();
+        const actual = _.map([1,2,3], (x) => x + 1);
+        const expected = [2,3,4] ;
+        expect(actual).to.eql(expected);
+        expect(_.map(['foo', 'bar', [1,2], 34], function (x) {return x + 1;})).to.eql(['foo1', 'bar1','1,21', 35]);
+        expect(_.map(['foo', 'bar', {'1':2}, 34], function (x) {return x + 1;})).to.eql(['foo1', 'bar1', '[object Object]1', 35]);
+        _.map([1,2,3], spy);
+        expect(spy.callCount).to.equal(3);
+        expect(spy.firstCall.args).to.eql([1,0,[1,2,3]]);
+        expect(_.map({a: 1, b: 2}, (x) => x + 1)).to.eql([2,3]);
+    });
+    
+    it('returns undefined values if the iteratee is not a valid function', () => {
+        const actual = _.map([1,2], 'hello');
+        const expected = [undefined,undefined] ;
+        expect(actual).to.eql(expected);
+    });
 });
+
 
 describe('_.pluck', () => {
     
@@ -231,7 +326,23 @@ describe('_.pluck', () => {
         const expected = 'function' ;
         expect(actual).to.be.a(expected);
     });
+
+    it('returns an array of property values from an array of objects', () => {
+        const actual = _.pluck([{name: 'moe', age: 40}, {name: 'larry', age: 50}, {name: 'curly', age: 60}], 'name') ;
+        const expected = ['moe', 'larry', 'curly'] ;
+        expect(actual).to.eql(expected);
+        expect(_.pluck('hello', 'l')).to.eql([undefined, undefined, undefined, undefined, undefined]);
+        expect(_.pluck([1,2,3])).to.eql([undefined, undefined, undefined]);
+        expect(_.pluck(123)).to.eql([]);
+    });
+
+    it('if the property name is a number n it returns an array of values corresponding to the the nth index of each property ', () => {
+        expect(_.pluck({1:'foo', 2:'bar', 3:'dog'}, 2)).to.eql(['o', 'r', 'g']);
+        expect(_.pluck({1:[1,2,3], 2:[4,5], 3:[3,4,5]}, 1)).to.eql([2, 5, 4]);
+    });
+    
 });
+
 
 describe('_.reduce', () => {
     
@@ -240,6 +351,30 @@ describe('_.reduce', () => {
         const expected = 'function' ;
         expect(actual).to.be.a(expected);
     });
+
+    it('takes the first element of an array if there is no memo passed', () => {
+        const actual = _.reduce([1,2,3],(memo, x) => {memo += x; return memo;}) ;
+        const expected = 7 ;
+        expect(actual).to.equal(expected);
+    });
+    
+    it('passes each value to an iteratee which has arguments memo, value, index and array. The memo is then returned and used in the next iteration', () => {
+        const actual = _.reduce([1,2,3],(memo, x) => {memo += x; return memo;}, 0) ;
+        const expected = 6 ;
+        expect(actual).to.equal(expected);
+        expect(_.reduce([1,2,3],(memo, x) => {memo.push(x * 2); return memo;}, [])).to.eql([2,4,6]);
+        expect(_.reduce('hello',(memo, x) => {if (x === 'l') memo += x; return memo;}, '')).to.equal('ll');
+        expect(_.reduce('hello', (memo, ele) => {memo[ele] = ele; return memo;}, {})).to.eql({h: 'h', e: 'e', l: 'l', o: 'o'});
+        expect(_.reduce(123, (memo, ele) => {return memo += ele;},0)).to.equal(0);
+        expect(_.reduce({foo:1, bar:2}, (memo, ele) => {memo[ele] = ele; return memo;}, {})).to.eql({1: 1, 2: 2});
+        
+        const spy = sinon.spy();
+        _.reduce([1,2,3],spy, 0);
+        expect(spy.firstCall.args).to.eql([0,1,0,[1,2,3]]);
+        expect(spy.thirdCall.args).to.eql([undefined,3,2,[1,2,3]]);
+        expect(spy.callCount).to.equal(3); 
+    });
+    
 });
 
 describe('_.contains', () => {

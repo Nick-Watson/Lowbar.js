@@ -58,15 +58,83 @@ _.filter = (array, predicate, context) => {
     return filteredElements; 
 };
 
-_.reject = () => {};
+_.reject = (array, predicate, context) => {
+    if (typeof array === 'function') return [undefined];
+    if (!predicate || typeof array === 'number') return [];
+    if (typeof array === 'string') array = array.split('');
+    if (array.constructor === Object) array = Object.values(array);
+    if (typeof predicate !== 'function') return array;
+    if (!context) context = this;
 
-_.uniq = () => {};
+    let rejectedElements = [];
 
-_.map = () => {};
+    for (let i = 0 ; i < array.length; i++) {
+        if (!predicate.call(context, array[i])) rejectedElements.push(array[i]);
+    }
 
-_.pluck = () => {};
+    return rejectedElements; 
+};
 
-_.reduce = () => {};
+_.uniq = (array, isSorted) => {
+    if (typeof array === 'string') array = array.split('');
+    if (Array.isArray(array)) {
+        let uniqElements = [];
+        if (isSorted) {
+            array.forEach((x, i, arr) => {
+                if (x !== arr[i + 1]) uniqElements.push(x);
+            });
+            return uniqElements;
+        }
+        array.forEach((x) => {
+            if (uniqElements.indexOf(x) < 0) uniqElements.push(x);
+        });
+        return uniqElements;
+    }
+
+    return [];
+};
+
+_.map = (array, iteratee, context) => {
+    if (typeof array === 'number') return [];
+    if (typeof array === 'string') array = array.split('');
+    if (array.constructor === Object) array = Object.values(array);
+    if (!iteratee) return array; 
+    if (!context) context = this;
+
+    let mappedElements = [];
+    
+    array.forEach((x, i, array) => {
+        if (typeof iteratee !== 'function') mappedElements.push(undefined);
+        else mappedElements.push(iteratee.call(context,x, i, array));
+    });
+
+    return mappedElements; 
+};
+
+_.pluck = (array, prop) => {
+    if (typeof array === 'number') return [];
+    if (array.constructor === Object) array = Object.values(array);
+    
+    let propValues = [];
+    
+    for (let i = 0; i < array.length; i++) {
+        propValues.push(array[i][prop]);
+    }
+
+    return propValues;
+};
+
+_.reduce = (array, iteratee, memo, context) => {
+    if (!context) context = this;
+    if (array.constructor === Object) array = Object.values(array);
+    if (memo === undefined) memo = array[0];
+ 
+    for (let i = 0 ; i < array.length; i++) {
+       memo = iteratee.call(context, memo, array[i], i, array);
+    }
+
+    return memo;  
+};
 
 _.contains = () => {};
 

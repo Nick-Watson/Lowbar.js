@@ -16,17 +16,21 @@ A reimplantation of the underscore.js library using Node.js and Test Driven Deve
     - _.filter(list, predicate, [context])
     - Looks through each value in the list, returning an array of all the values that pass a truth test (predicate).
 * reject
+    - _.reject(list, predicate, [context]) 
+    - Returns the values in list without the elements that the truth test (predicate) passes. The opposite of filter.
 * every
 * some
 * contains
 * invoke
 * pluck
+    - _.pluck(list, propertyName) 
+    - A convenient version of what is perhaps the most common use-case for map: extracting a list of property values.
 * sortBy
 * shuffle
 
 ## Arrays
 * first
-    - _.first(array, [n]) Aliases: head, take 
+    - _.first(array, [n])
     - Returns the first element of an array. Passing n will return the first n elements of the array. 
 * last
     - _.last(array, [n]) 
@@ -35,6 +39,8 @@ A reimplantation of the underscore.js library using Node.js and Test Driven Deve
 * intersection
 * difference
 * uniq
+    - _.uniq(array, [isSorted], [iteratee]) 
+    - Produces a duplicate-free version of the array, using === to test object equality. In particular only the first occurence of each value is kept. If you know in advance that the array is sorted, passing true for isSorted will run a much faster algorithm. If you want to compute unique items based on a transformation, pass an iteratee function.
 * zip
 * indexOf
 * sortedIndex
