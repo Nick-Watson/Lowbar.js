@@ -384,6 +384,31 @@ describe('_.contains', () => {
         const expected = 'function' ;
         expect(actual).to.be.a(expected);
     });
+
+    it('returns false if no value is passed', () => {
+        const actual = _.contains([1,2,3]) ;
+        const expected = false ;
+        expect(actual).to.equal(expected);
+    });
+
+    it('returns true if the value is present in the list and the list is an array, string string or object', () => {
+        const actual = _.contains([1,2,3], 2) ;
+        const expected = true ;
+        expect(actual).to.equal(expected);
+        expect(_.contains('hello', 'o')).to.equal(expected);
+        expect(_.contains({1:2, 3:4}, 4)).to.equal(expected);
+        expect(_.contains(1234, 4)).to.equal(false);
+    });
+
+    it('checks for the value in the list from the index passed as the third argument', () => {
+        const actual = _.contains([1,2,3], 2, 2) ;
+        const expected = false ;
+        expect(actual).to.equal(expected);
+        expect(_.contains('hello', 'o', 5)).to.equal(expected);
+        expect(_.contains({1:2, 3:4}, 4, 1)).to.equal(true);
+        expect(_.contains(1234, 4)).to.equal(false);
+    });
+
 });
 
 describe('_.every', () => {
@@ -392,6 +417,29 @@ describe('_.every', () => {
         const actual = _.every ;
         const expected = 'function' ;
         expect(actual).to.be.a(expected);
+    });
+
+    it('returns true if no predicate is passed', () => {
+        const actual = _.every([1,2,3]) ;
+        const expected = true ;
+        expect(actual).to.equal(expected);
+        expect(_.every()).to.equal(expected);
+    });
+
+    it('returns false if the any list element returns false from the predicate or the predicate is not a function', () => {
+        const actual = _.every([1,2,3], (x) => {return x > 2;}) ;
+        const expected = false ;
+        expect(actual).to.equal(expected);
+        expect(_.every('hello', 'o')).to.equal(expected);
+        expect(_.every({1:2, 3:3}, (x) => {return x === 2;})).to.equal(false);
+    });
+
+    it('returns true if the all list elements return ture from the predicate', () => {
+        const actual = _.every([1,2,3], (x) => {return x > 0;}) ;
+        const expected = true ;
+        expect(actual).to.equal(expected);
+        expect(_.every(['he'],(x) => {return x === 'he';})).to.equal(expected);
+        expect(_.every({1:2, 3:3}, (x) => {return x > 1;})).to.equal(expected);
     });
 });
 
@@ -402,6 +450,28 @@ describe('_.some', () => {
         const expected = 'function' ;
         expect(actual).to.be.a(expected);
     });
+
+    it('returns true if any list element is truthy', () => {
+        const actual = _.some([null,false,'','hi']) ;
+        const expected = true ;
+        expect(actual).to.equal(expected);
+        expect(_.some(' ')).to.equal(expected);
+    });
+
+    it('returns false all list elements are falsey values', () => {
+        const actual = _.some(['',undefined,false, null]) ;
+        const expected = false ;
+        expect(actual).to.equal(expected);
+        expect(_.some()).to.equal(expected);
+    });
+
+    it('passes each list element to the predicate and returns true if any element returns true ', () => {
+        const actual = _.some([-1,-2,3], (x) => {return x > 0;}) ;
+        const expected = true ;
+        expect(actual).to.equal(expected);
+        expect(_.some({1:'j',2:'t',3:'l'}, function (x) { return x === 'l';})).to.equal(expected);
+        expect(_.some('hell', function (x) {return x === 'l';})).to.equal(expected);
+    });
 });
 
 describe('_.extend', () => {
@@ -411,6 +481,24 @@ describe('_.extend', () => {
         const expected = 'function' ;
         expect(actual).to.be.a(expected);
     });
+
+    it('shallow copies all properties from a source object to the destination and returns the destination', () => {
+        const a = {name: 'moe'};
+        const arr = [23,9];
+        const b = {age: arr};
+        const actual = _.extend(a, b);
+        const expected = {name: 'moe', age: arr} ;
+        expect(actual).to.eql(expected);
+        expect(_.extend('hello', {1:2})).to.eql('hello');
+        expect(_.extend(123, {1:2})).to.eql(123);
+        expect(_.extend([1,2,3], {1:2})).to.eql([1,2,3]);
+    });
+    
+    it('shallow copies all properties from multipe source objects to the destination and returns the destination', () => {
+        const actual = _.extend({name: 'moe'}, {age: 50}, {colour: 'red', dog: 'yes'}, {1:2}); 
+        const expected = {name: 'moe', age: 50, colour: 'red', dog: 'yes', 1:2} ;
+        expect(actual).to.eql(expected);
+    });
 });
 
 describe('_.defaults', () => {
@@ -419,6 +507,18 @@ describe('_.defaults', () => {
         const actual = _.defaults ;
         const expected = 'function' ;
         expect(actual).to.be.a(expected);
+    });
+
+    it('fills in undefined properties in obj argument with values present in a default object', () => {
+        const actual = _.defaults({flavor: 'chocolate'}, {flavor: 'vanilla', sprinkles: 'lots'}) ;
+        const expected = {flavor: 'chocolate', sprinkles: 'lots'} ;
+        expect(actual).to.eql(expected);
+    });
+    
+    it('fills in undefined properties in obj argument with values present in a list of default objects', () => {
+        const actual = _.defaults({flavor: 'chocolate'}, {flavor: 'vanilla', sprinkles: 'lots'}, {hot: 'yes'}) ;
+        const expected = {flavor: 'chocolate', sprinkles: 'lots', hot: 'yes'} ;
+        expect(actual).to.eql(expected);
     });
 });
 

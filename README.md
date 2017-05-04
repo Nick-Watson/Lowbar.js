@@ -19,8 +19,14 @@ A reimplantation of the underscore.js library using Node.js and Test Driven Deve
     - _.reject(list, predicate, [context]) 
     - Returns the values in list without the elements that the truth test (predicate) passes. The opposite of filter.
 * every
+    - _.every(list, [predicate], [context]) 
+    - Returns true if all of the values in the list pass the predicate truth test. Short-circuits and stops traversing the list if a false element is found.
 * some
+    - _.some(list, [predicate], [context]) 
+    Returns true if any of the values in the list pass the predicate truth test. Short-circuits and stops traversing the list if a true element is found.
 * contains
+    - _.contains(list, value, [fromIndex]) Alias: includes 
+    - Returns true if the value is present in the list. Uses indexOf internally, if list is an Array. Use fromIndex to start your search at a given index.
 * invoke
 * pluck
     - _.pluck(list, propertyName) 
@@ -52,7 +58,11 @@ A reimplantation of the underscore.js library using Node.js and Test Driven Deve
 
 ## Objects
 * extend
+    - _.extend(destination, *sources) 
+    - Shallowly copy all of the properties in the source objects over to the destination object, and return the destination object. Any nested objects or arrays will be copied by reference, not duplicated. It's in-order, so the last source will override properties of the same name in previous arguments.
 * defaults
+    - _.defaults(object, *defaults) 
+    - Fill in undefined properties in object with the first value present in the following list of defaults objects.
 
 ## Utility
 * identity

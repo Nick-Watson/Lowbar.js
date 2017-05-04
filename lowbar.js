@@ -136,15 +136,67 @@ _.reduce = (array, iteratee, memo, context) => {
     return memo;  
 };
 
-_.contains = () => {};
+_.contains = (list, value, fromIndex) => {
+    if (!value) return false;
+    if (list.constructor === Object) list = Object.values(list);
+    let i = 0;
+    if (fromIndex >= 0 && typeof fromIndex === 'number') i = fromIndex;
+    for (i; i < list.length; i++) {
+        if (list[i] === value) return true;
+    }
 
-_.every = () => {};
+    return false;
+};
 
-_.some = () => {};
+_.every = (list, predicate, context) => {
+    if (!predicate) return true;
+    if (typeof predicate !== 'function') return false;
+    if (list.constructor === Object) list = Object.values(list);
+    if (!context) context = this;
+    for (let i = 0; i < list.length; i++) {
+        if (!predicate.call(this, list[i])) return false;
+    }
 
-_.extend = function () {};
+    return true;
+};
 
-_.defaults = function () {};
+_.some = (list, predicate, context) => {
+    if (!list && !predicate) return false; 
+    if (list.constructor === Object) list = Object.values(list);
+    if (!context) context = this;
+    for (let i = 0; i < list.length; i++) {
+        if (predicate)  {
+            if (predicate.call(context,list[i])) return true;
+        }
+        else {
+            if (list[i]) return true; 
+        }
+    }
+
+    return false;
+
+};
+
+_.extend = function (destination) {
+    let key;
+    for (let i = 0; i < arguments.length; i++) {
+        for (key in arguments[i]) {
+            destination[key] = arguments[i][key];
+        }
+    }
+
+    return destination;
+};
+
+_.defaults = function (object) {
+    let key;
+    for (let i = 0; i < arguments.length; i++) {
+        for (key in arguments[i]) {
+            if (!object.hasOwnProperty(key)) object[key] = arguments[i][key];
+        }
+    }
+    return object;
+};
 
 _.indexOf = () => {};
 
