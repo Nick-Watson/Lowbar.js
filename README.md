@@ -1,6 +1,18 @@
 # Lowbar.js
 
-A reimplantation of the underscore.js library using Node.js and Test Driven Development
+A reimplantation of the underscore.js functional library using Node.js. I folllowed a Test Driven Development process using Mocha, Chai and Sinon.
+
+To view the the functions and tests ensure you have Node v7.0.0.
+
+Then from the command line;
+
+``````
+git clone https://github.com/Nick-Watson/Lowbar.js.git
+cd Lowbar
+npm install
+npm test
+``````
+N.B. some functions use the Object.values method which is an upcoming ES2017 feature that Node has supported from version 7.0.0.
 
 ## Collections
 * each

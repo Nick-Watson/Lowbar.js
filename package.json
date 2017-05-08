@@ -2,7 +2,7 @@
   "name": "lowbar.js",
   "version": "1.0.0",
   "description": "A reimplantation of the underscore.js library using Node.js and Test Driven Development",
-  "main": "index.js",
+  "main": "lowbar.js",
   "scripts": {
     "test": "mocha ./spec/",
     "lint": "eslint ./",
