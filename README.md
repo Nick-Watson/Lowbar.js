@@ -66,10 +66,12 @@ A reimplantation of the underscore.js library using Node.js and Test Driven Deve
     - _.indexOf(array, value, [isSorted]) 
     - Returns the index at which value can be found in the array, or -1 if value is not present in the array. If you're working with a large array, and you know that the array is already sorted, pass true for isSorted to use a faster binary search ... or, pass a number as the third argument in order to look for the first matching value in the array after the given index. 
 * sortedIndex
+    - .sortedIndex(list, value, [iteratee], [context]) 
+    - Uses a binary search to determine the index at which the value should be inserted into the list in order to maintain the list's sorted order. If an iteratee function is provided, it will be used to compute the sort ranking of each value, including the value you pass. The iteratee may also be the string name of the property to sort by (eg. length).
 
 ## Functions
 * memoize
-    - _.memoize(function, [hashFunction]) 
+    - _.memoize(function) 
     - Memoizes a given function by caching the computed result. Useful for speeding up slow-running computations. If passed an optional hashFunction, it will be used to compute the hash key for storing the result, based on the arguments to the original function. The default hashFunction just uses the first argument to the memoized function as the key. The cache of memoized values is available as the cache property on the returned function.
 * delay
     - _.delay(function, wait, *arguments) 

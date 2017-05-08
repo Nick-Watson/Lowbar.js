@@ -275,7 +275,6 @@ describe('_.uniq', () => {
     }); 
 });
 
-
 describe('_.map', () => {
     
     it('is a function', () => {
@@ -318,7 +317,6 @@ describe('_.map', () => {
     });
 });
 
-
 describe('_.pluck', () => {
     
     it('is a function', () => {
@@ -342,7 +340,6 @@ describe('_.pluck', () => {
     });
     
 });
-
 
 describe('_.reduce', () => {
     
@@ -688,62 +685,130 @@ describe('_.shuffle', () => {
 describe('_.invoke', () => {
 
     it('is a function', () => {
-        const actual = _.invoke ;
-        const expected = 'function' ;
-        expect(actual).to.be.a(expected);
+        expect(_.invoke).to.be.a('function');
+    });
+
+    it ('calls the function for every element', () => {
+    const nums = [[1,2],[3,4]];
+    const words = [['he','llo'],['the','re']];
+    expect(_.invoke(nums, 'reverse')).to.eql([[2,1],[4,3]]);
+    expect(_.invoke(words, 'join', '')).to.eql(['hello', 'there']);
     });
 });
 
 describe('_.sortBy', () => {
 
     it('is a function', () => {
-        const actual = _.sortBy ;
-        const expected = 'function' ;
-        expect(actual).to.be.a(expected);
+        expect(_.sortBy).to.be.a('function');
+    });
+
+    it('sorts a list in asscending order based on the results of iteratee', () => {
+        expect(_.sortBy([1, 2, 3, 4, 5, 6], function (num) { return Math.sin(num); })).to.eql([5, 4, 6, 3, 1, 2]);
+
+    });
+
+    it('sorts a list in asscending order based on property name (string)', () => {
+        const stooges = [{name: 'moe', age: 40}, {name: 'larry', age: 50}, {name: 'curly', age: 60}];
+        expect(_.sortBy(stooges, 'name')).to.eql([{name: 'curly', age: 60}, {name: 'larry', age: 50}, {name: 'moe', age: 40}]);
+    });
+
+    it('sorts a list in asscending order based on property name (number)', () => {
+        const stooges = [{name: 'moe', age: 50}, {name: 'larry', age: 70}, {name: 'curly', age: 60}];
+        expect(_.sortBy(stooges, 'age')).to.eql([{name: 'moe', age: 50}, {name: 'curly', age: 60}, {name: 'larry', age: 70}]);
     });
 });
 
 describe('_.zip', () => {
 
     it('is a function', () => {
-        const actual = _.zip ;
-        const expected = 'function' ;
-        expect(actual).to.be.a(expected);
+        expect(_.zip).to.be.a('function');
+    });
+
+    it('merges elements at corresponding indexes together', () => {
+        expect(_.zip(['moe', 'larry', 'curly'], [30, 40, 50], [true, false, false])).to.eql([['moe', 30, true], ['larry', 40, false], ['curly', 50, false]]);
+        expect(_.zip('he')).to.eql([['h'], ['e']]);
+        expect(_.zip([1, 3], [2, 2])).to.eql([[1, 2], [3, 2]]);
+
     });
 });
 
 describe('_.sortedIndex', () => {
 
     it('is a function', () => {
-        const actual = _.sortedIndex ;
-        const expected = 'function' ;
-        expect(actual).to.be.a(expected);
+        expect(_.sortedIndex).to.be.a('function');
     });
+
+    it('dertimines the index at which a value should be inserted into a list', () => {
+        expect(_.sortedIndex([10, 20, 30, 40, 50], 35)).to.equal(3);
+    });
+
+    it('dertimines the index at which a value should be inserted into a list using property name', () => {
+        const stooges = [{name: 'moe', age: 40}, {name: 'curly', age: 60}];
+        expect(_.sortedIndex(stooges, {name: 'larry', age: 50}, 'age')).to.equal(1);
+    });
+
+    it('returns the correct index given a callback', () => {
+        var actual = _.sortedIndex([1, 3, 2, 4, 5, 6], 5, el => Math.sin(el));
+        expect(actual).to.equal(0);
+    });
+
 });
 
 describe('_.flatten', () => {
 
     it('is a function', () => {
-        const actual = _.flatten ;
-        const expected = 'function' ;
-        expect(actual).to.be.a(expected);
+        expect(_.flatten).to.be.a('function');
     });
+
+    it('should flatten array', () => {
+        const actual = _.flatten([1, [2], [3, [[4]]]]);
+        const expected = [1, 2, 3, 4];
+        expect(actual).to.eql(expected);
+        expect(_.flatten([1, [7, [8], 9], [2, [3, 4], 5, 6]])).to.eql([1, 7, 8, 9, 2, 3, 4, 5, 6]);
+    });
+
+    it('does not mutate the original array', () => {
+        expect(_.flatten([])).to.not.equal([]);
+    });
+
+    it('should only flatten one level if passed boolean', () => {
+        const actual = _.flatten([1, [2], [3, [[4]]]], true);
+        const expected = [1, 2, 3, [[4]]];
+        expect(actual).to.eql(expected);
+        expect(_.flatten([1, [2, [3]]], true)).to.eql([1, 2, [3]]);
+    });
+
 });
 
 describe('_.intersection', () => {
 
     it('is a function', () => {
-        const actual = _.intersection ;
-        const expected = 'function' ;
-        expect(actual).to.be.a(expected);
+        expect(_.intersection).to.be.a('function');
     });
+
+    it('returns an array', () => {
+        expect(_.intersection([])).to.eql([]);
+    });
+    it('finds the intersection', () => {
+        expect(_.intersection([1, 2, 3, 4], [1, 3, 4, 5, 6], [1, 4])).to.eql([1, 4]);
+        expect(_.intersection([1, 2], [1])).to.eql([1]);
+    });
+
 });
 
 describe('_.difference', () => {
 
     it('is a function', () => {
-        const actual = _.difference ;
-        const expected = 'function' ;
-        expect(actual).to.be.a(expected);
+        expect(_.difference).to.be.a('function');
     });
+
+    it('returns an array', () => {
+        expect(_.difference([])).to.eql([]);
+    });
+    it('finds the difference', () => {
+        expect(_.difference([1, 2, 3, 4], [3, 4, 5, 6], [1, 4])).to.eql([2, 5, 6]);
+        expect(_.difference([1, 2, 3, 4], [3, 4, 5, 6], [1, 4, 6])).to.eql([2, 5]);
+        expect(_.difference([1, 2], [1])).to.eql([2]);
+    });
+
 });

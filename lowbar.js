@@ -289,18 +289,130 @@ _.shuffle = (list) => {
     }
 };
 
-_.invoke = () => {};
+_.invoke = function (list, method) {
+    const args = Array.prototype.slice.call(arguments,2);
+    return list.map(x => x[method].apply(x, args));
+};
 
-_.sortBy = () => {};
+_.sortBy = (list, iteratee, context) => {
+    if (!context) context = this;
+    if (typeof iteratee === 'string') {
+      let sortedValues = [];
+      const ordered = _.map(list, x => x[iteratee]).sort();
+      ordered.forEach(x => {
+          list.forEach(key => {
+              if (key[iteratee] === x) {
+                  sortedValues.push(key);
+              }
+          });
+      });
+      return sortedValues;
+    }
+    if (Array.isArray(list)) {
+        return list.sort((a,b) => iteratee.call(context,a) - iteratee.call(context,b));
+    }
+    return [];
+};
 
-_.zip = () => {};
+_.zip = function () {
+    if (arguments.length === 0) return [];
+    let zippedArrays = [];
+    for (let i = 0; i < arguments[0].length; i++) {
+        let arr = [];
+        for (let j = 0; j < arguments.length; j++) {
+            arr.push(arguments[j][i]);
+        }
+        zippedArrays.push(arr);
+    }
+    return zippedArrays;
+};
 
-_.sortedIndex = () => {};
+_.sortedIndex = function (list, value, iteratee, context) {
+    if (!context) context = this;
+    if (arguments.length >= 3) {
+        return binarySearch(_.sortBy(list, iteratee, context), value);
+    }
+    return binarySearch(list, value);
 
-_.flatten = () => {};
+    function binarySearch (list, value) {
+        let start = 0, end = list.length - 1, mid;
+            mid = Math.floor((end + start) / 2);
 
-_.intersection = () => {};
+        for (let i = 0 ; i < list.length - 1 ; i++)  { 
+            if (list[mid] === value) return mid;
+            
+            if (value < list[mid]) {
+                end = mid - 1 ;
+                mid = Math.floor((end + start) / 2);     
+            }
+            
+            if (value > list[mid]) {
+                start = mid + 1;
+                mid = Math.floor((end + start) / 2);
+            }
+ 
+        }
+        return mid + 1;
+    }
+};
 
-_.difference = () => {};
+_.flatten = (array, shallow) => {
+    let flattenedValues = [];
+
+    if (shallow) {
+        array.forEach((x) => {
+            if (Array.isArray(x)) {
+                x.forEach((y) => {
+                    flattenedValues.push(y);
+                });
+            }
+            else flattenedValues.push(x);
+        });
+        return flattenedValues;
+    }
+    
+    recursiveFlatten(array);
+
+
+    return flattenedValues;
+
+    function recursiveFlatten (array) {
+        array.forEach((ele) => {
+        if (!Array.isArray(ele)) flattenedValues.push(ele);
+        else recursiveFlatten(ele);
+        });
+    }
+};
+
+_.intersection = function () {
+    let out = [];
+    const args = Array.from(arguments);
+    args[0].forEach((ele) => {
+        let isInt = true;
+        args.forEach((x) => {
+            if (x.indexOf(ele) < 0) isInt = false;
+        });
+        if (isInt === true) out.push(ele);
+    });
+
+    return out;
+};
+
+_.difference = function () {
+    let differentValues = [];
+    const args = Array.from(arguments);
+    args.forEach((arg, i, args) => {
+        arg.forEach((ele) => {
+            let timesPresentInArrays = 0;
+            args.forEach((x) => {
+                if (x.indexOf(ele) >= 0) timesPresentInArrays ++;
+            });
+            if (timesPresentInArrays === 1) differentValues.push(ele);
+        });
+    });
+
+    return differentValues;
+    
+};
   
   module.exports = _;
