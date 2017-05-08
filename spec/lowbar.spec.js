@@ -525,46 +525,164 @@ describe('_.defaults', () => {
 describe('_.indexOf', () => {
 
     it('is a function', () => {
-        const actual = _.indexOf ;
-        const expected = 'function' ;
-        expect(actual).to.be.a(expected);
+        expect(_.indexOf).to.be.a('function');
     });
+
+    it('returns -1 if there is no value passed as the second argument', () => {
+        const actual = _.indexOf([1, 2, 3]);
+        const expected = -1;
+        expect(actual).to.equal(expected);
+    });
+
+    it('returns -1 if the list argument is not an array or string', () => {
+        const actual = _.indexOf(1234, 2);
+        const expected = -1;
+        expect(actual).to.equal(expected);
+        expect(_.indexOf({'foo': 1}, 'foo')).to.equal(expected);
+    });
+
+    it('returns the first index of the value in the passed array/string', () => {
+        const actual = _.indexOf([1, 2, 3, 4], 2);
+        const expected = 1;
+        expect(actual).to.equal(expected);
+        expect(_.indexOf('hello', 'l')).to.equal(2);
+    });
+
+    it('returns -1 if the value is not present in the array/string', () => {
+        const actual = _.indexOf([1, 2, 3, 4], 6);
+        const expected = -1;
+        expect(actual).to.equal(expected);
+        expect(_.indexOf('hello', 'q')).to.equal(-1);
+    });
+
+    it('returns the index of the matching value after a given index if the third argument is passed is a number', () => {
+        const actual = _.indexOf([4, 2, 3, 4], 4, 1);
+        const expected = 3;
+        expect(actual).to.equal(expected);
+    });
+
+    it('returns the index of the matching value using a binary serach if the isSorted argument is true', () => {
+        const actual = _.indexOf([1, 2, 3, 4], 4, true);
+        const expected = 3;
+        expect(actual).to.equal(expected);
+        expect(_.indexOf('hello', 'e', true)).to.equal(1);
+    });
+
 });
 
 describe('_.once', () => {
 
     it('is a function', () => {
-        const actual = _.once ;
-        const expected = 'function' ;
-        expect(actual).to.be.a(expected);
+        expect(_.once).to.be.a('function');
+    });
+
+    it('returns a function which can only be called once (spy test)', function () {
+        const spy = sinon.spy();
+        const called = _.once(spy);
+        called();
+        called();
+        expect(spy.calledOnce).to.equal(true);
+    });
+
+    it('returns a function which can only be called once', function () {
+        let counter = 0;
+        const addx = function (a, b) { counter += a + b; };
+        const called = _.once(addx);
+        called(3, 5);
+        called(10, 10);
+        expect(counter).to.equal(8);
     });
 });
 
 describe('_.memoize', () => {
+    function fib (n) { return n < 2 ? n : fib(n - 1) + fib(n - 2); }
+    const quickFib = _.memoize(fib);
+    const normalRes = fib(5);
+    const quickRes = quickFib(5);
 
     it('is a function', () => {
-        const actual = _.memoize ;
-        const expected = 'function' ;
-        expect(actual).to.be.a(expected);
+        expect(_.memoize).to.be.a('function');
+    });
+
+    it('returns a function with a cache property', () => {
+        expect(quickFib).to.be.a('function');
+        expect(quickFib.hasOwnProperty('cache')).to.equal(true);
+    });
+
+    it('returns the same value as the passed function', () => {
+        expect(quickRes).to.equal(normalRes);
+    });
+
+    it('returns a result from the cache object if the argument to the function has been passed previously (SPIES)', () => {
+        const spy = sinon.spy(function (n) { return n < 2 ? n : fibonacci(n - 1) + fibonacci(n - 2); });
+        const fibonacci = _.memoize(spy);
+
+        expect(fibonacci(9)).to.equal(34);
+        expect(spy.callCount).to.equal(10);
+        expect(fibonacci(10)).to.equal(55);
+        expect(spy.callCount).to.equal(11);
+        expect(fibonacci(9)).to.equal(34);
+        expect(spy.callCount).to.equal(11);
+    });
+
+    it('returns a result faster if the argument to the function has been passed previously (TIME)', () => {
+        const beforeSlow = new Date().getTime();
+        fib(25);
+        const afterSlow = new Date().getTime();
+        quickFib(25);
+        const beforeQuick = new Date().getTime();
+        quickFib(25);
+        const afterQuick = new Date().getTime();
+        expect(afterQuick - beforeQuick).to.be.lessThan(afterSlow - beforeSlow);
     });
 });
 
 describe('_.delay', () => {
+    let spy, result;
+    before(function (done) {
+        let start = new Date().getTime();
+        spy = sinon.spy(function () {
+            done();
+            let end = new Date().getTime();
+            result = end - start;
+        });
 
-    it('is a function', () => {
-        const actual = _.delay;
-        const expected = 'function' ;
-        expect(actual).to.be.a(expected);
+        _.delay(spy, 500);
+    });
+    it('is a function', function () {
+        expect(_.delay).to.be.a('function');
+    });
+    it('calls the function after a given amount of time', function () {
+        expect(spy.called).to.be.true;
+    });
+    it('does not call the function before a given amount of time', function () {
+        expect(result).to.not.be.lessThan(500);
     });
 });
 
 describe('_.shuffle', () => {
 
     it('is a function', () => {
-        const actual = _.shuffle ;
-        const expected = 'function' ;
-        expect(actual).to.be.a(expected);
+        expect(_.shuffle).to.be.a('function');
     });
+
+    it('returns an array of randomly sorted elements from the passed list argument', () => {
+        let arr = [];
+        for (let i = 0; i < 1000; i++) arr.push(i);
+        expect(_.shuffle(arr.slice(0))).not.to.eql(arr);
+    });
+
+    it('works for strings and objects', () => {
+        let str = '';
+        let obj = {};
+        for (let i = 0; i < 1000; i++) str += i;
+        for (let i = 0; i < 1000; i++) obj[i] = i;
+        expect(_.shuffle(str)).to.be.a('array');
+        expect(_.shuffle(str)).not.to.eql(str.split(''));
+        expect(_.shuffle(obj)).to.be.a('array');
+        expect(_.shuffle(obj)).not.to.eql(Object.values(obj));
+    });
+
 });
 
 describe('_.invoke', () => {

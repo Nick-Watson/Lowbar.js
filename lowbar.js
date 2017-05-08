@@ -198,15 +198,96 @@ _.defaults = function (object) {
     return object;
 };
 
-_.indexOf = () => {};
+_.indexOf = (array, value, isSorted) => {
+    if (Array.isArray(array) || (typeof array === 'string')) {
+        if (isSorted) return binarySearch(array, value);
+        
+        let i = 0;
+        if (typeof isSorted === 'number') i = isSorted;
+        for (i; i < array.length; i++) {
+            if (array[i] === value) return i;
+        }
+    }
 
-_.once = () => {};
+    return -1;
 
-_.memoize = () => {};
+    function binarySearch (list, value) {
+        let start = 0;
+        let end = list.length - 1;
+        let mid = Math.floor(end + start / 2);
 
-_.delay = () => {};
+        for (let i = 0 ; i < list.length ; i++)  { 
+            
+            if (value > list[mid]) {
+            start = mid + 1;
+            mid = Math.floor((end + start) / 2);
+            }
 
-_.shuffle = () => {};
+            if (value < list[mid]) {
+                end = mid - 1 ;
+                mid = Math.floor((end + start) / 2);     
+            }
+            
+            if (value === list[mid]) return mid;
+        }
+    }
+};
+
+_.once = (func) => {
+    let canRun = true;
+    return function () {
+        if (canRun) {
+            canRun = false;
+            func.apply(this, arguments);
+        }
+    };
+};
+
+_.memoize = (func) => {
+    const cache  = {};
+    
+    const fast = function () {
+        const arg = JSON.stringify(arguments[0]);
+        if (cache[arg]) return cache[arg];
+        else {
+            const res = func.apply(null, arguments);
+            cache[arg] = res;
+            return res;
+        }
+    };
+
+    fast.cache = cache;
+
+    return fast;
+};
+
+_.delay = function (func, wait) {
+    const args = Array.prototype.slice.call(arguments, 2);
+    setTimeout (function () {
+       func.apply(null, args);
+    }, wait);
+};
+
+_.shuffle = (list) => {
+    if (typeof list === 'number') return [];
+    if (typeof list === 'string') list = list.split('');
+    if (list.constructor === Object) list = Object.values(list);
+
+    return fyShuffle(list);
+
+    function fyShuffle (array) {
+        let numberOfElements = array.length, temp, index;
+
+        while (numberOfElements) {
+            index = Math.floor(Math.random() * numberOfElements--);
+            temp = array[numberOfElements];
+            array[numberOfElements] = array[index];
+            array[index] = temp;
+        }
+
+        return array;
+    }
+};
 
 _.invoke = () => {};
 
