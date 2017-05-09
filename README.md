@@ -1,6 +1,6 @@
 # Lowbar.js
 
-A reimplantation of the underscore.js functional library using Node.js. I folllowed a Test Driven Development process using Mocha, Chai and Sinon.
+A reimplantation of the [underscore.js](http://underscorejs.org/) functional library using Node.js. I followed a Test Driven Development process using Mocha, Chai and Sinon.
 
 To view the the functions and tests ensure you have Node v7.0.0.
 
