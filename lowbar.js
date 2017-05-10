@@ -27,15 +27,16 @@ _.each = (list, iteratee, context) => {
     let key;
     if (!iteratee || typeof list === 'number') return list;
     if (!context) context = this;
+    let func = iteratee.bind(context);
     if (Array.isArray(list)) {       
         for (let i = 0 ; i < list.length; i++) {
-            iteratee.call(context,list[i], i, list);
+            func(list[i], i, list);
         }   
         return list;
     }
 
     for (key in list) {
-        iteratee.call(context,list[key], key, list);
+        func(list[key], key, list);
     }
 
     return list;
@@ -291,7 +292,7 @@ _.shuffle = (list) => {
 
 _.invoke = function (list, method) {
     const args = Array.prototype.slice.call(arguments,2);
-    return list.map(x => x[method].apply(x, args));
+    return list.map(ele => ele[method].apply(ele, args));
 };
 
 _.sortBy = (list, iteratee, context) => {

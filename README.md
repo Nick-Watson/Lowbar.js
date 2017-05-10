@@ -1,18 +1,42 @@
 # Lowbar.js
 
-A reimplantation of the [underscore.js](http://underscorejs.org/) functional library using Node.js. I followed a Test Driven Development process using Mocha, Chai and Sinon.
+A reimplantation of the [underscore.js](http://underscorejs.org/) functional library using Node.js. This project uses a Test Driven Development process using Mocha, Chai and Sinon.
 
-To view the the functions and tests ensure you have Node v7.0.0.
+### Prerequisites
 
-Then from the command line;
+Please ensure you have the following installed;
+
+```
+Node.js v7.0.0 or higher
+```
+Available [here](https://nodejs.org/en/download/current/)
+
+## Getting Started and Tests
+
+The functions are located in the lowbar.js file. In order to view the tests used in the TDD process please follow the instructions below.
+
+From the command line and in a directory of your choosing;
 
 ``````
 git clone https://github.com/Nick-Watson/Lowbar.js.git
+
 cd Lowbar
+
 npm install
+
 npm test
 ``````
 N.B. some functions use the Object.values method which is an ES2017 feature that Node has supported from version 7.0.0.
+
+## Built With
+
+* [Mocha](https://mochajs.org/) - Test framework
+* [Chai](http://chaijs.com/) - Assertation library
+* [Sinon](http://sinonjs.org/) - Test spies
+
+# Methods
+
+The functions implemented are listed below;
 
 ## Collections
 ### each
